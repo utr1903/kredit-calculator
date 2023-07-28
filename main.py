@@ -119,15 +119,19 @@ for monat in range(int(laufzeitMonaten)):
   immobilienEigentumTotal = immobilienEigentumTotal + tilgung
   immobilienEigentum.append(immobilienEigentumTotal / (kaufpreis + nebenkosten) * 100)
 
-print("---")
-print("---")
+print()
+print('----------------')
+print('--- ERGEBNIS ---')
+print('----------------')
+print()
+
 print("zinsBezahlt: " + str(zinsBezahlt))
 print("tilgungBezahlt: " + str(tilgungBezahlt))
-objektTotal = eigenkapital + tilgungBezahlt
-objektProzent = objektTotal / kaufpreis * 100
-print("objektTotal: " + str(objektTotal))
-print("objektProzent: " + str(objektProzent))
-print("---")
+immobilienEigentumAmZinsbindung = eigenkapital + tilgungBezahlt
+immobilienEigentumAmZinsbindungProzent = immobilienEigentumAmZinsbindung / (kaufpreis + nebenkosten) * 100
+print("immobilienEigentumAmZinsbindung: " + str(immobilienEigentumAmZinsbindung))
+print("immobilienEigentumAmZinsbindungProzent: " + str(immobilienEigentumAmZinsbindungProzent))
+
 print("---")
 
 ######################
