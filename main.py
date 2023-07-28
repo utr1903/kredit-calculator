@@ -14,6 +14,12 @@ with open("./config.yaml", "r") as stream:
     print(exc)
     exit(1)
 
+print()
+print('-------------')
+print('--- INPUT ---')
+print('-------------')
+print()
+
 # Kapital
 eigenkapital = config['eigenkapital']
 print("eigenkapital: " + str(config['eigenkapital']))
@@ -42,6 +48,12 @@ print("zinsbindungJahre: " + str(config['zinsbindungJahre']))
 ### Berechnung ###
 ##################
 
+print()
+print('------------------')
+print('--- BERECHNUNG ---')
+print('------------------')
+print()
+
 nebenkosten = kaufpreis * (grunderwerbsteuer + notar + makler)
 print("nebenkosten: " + str(nebenkosten))
 darlehen = kaufpreis + modernisierung + nebenkosten - eigenkapital
@@ -59,7 +71,7 @@ print("anfangstilgung: " + str(anfangstilgung))
 
 # Plot variables
 zinsbindungMonate = zinsbindungJahre * 12.0
-monate = []
+jahre = []
 restschulden = []
 zinsen = []
 zinsenTotal = []
@@ -78,8 +90,9 @@ for monat in range(int(laufzeitMonaten)):
   print("---")
 
   # Time
-  monate.append(monat)
-  print("restschuld: " + str(monat))
+  jahr = monat / 12.0
+  jahre.append(jahr)
+  print("jahr: " + str(jahr))
 
   restschuld = darlehen * pow(q, monat) - annuitat * (pow(q, monat) - 1.0) / zinssatzMonatlich
   print("restschuld: " + str(restschuld))
@@ -104,7 +117,6 @@ for monat in range(int(laufzeitMonaten)):
     tilgungBezahlt = tilgungBezahlt + tilgung
 
   immobilienEigentumTotal = immobilienEigentumTotal + tilgung
-  # immobilienEigentum.append(immobilienEigentumTotal)
   immobilienEigentum.append(immobilienEigentumTotal / (kaufpreis + nebenkosten) * 100)
 
 print("---")
@@ -123,36 +135,35 @@ print("---")
 ######################
 
 # Restschuld
-plt.title('Restschuld')
-plt.xlabel('Monate')
+plt.title('Restschuld (€)')
+plt.xlabel('Jahre')
 
 plt.grid(visible=True)
-plt.axvline(x = zinsbindungMonate, linestyle='--', color = 'r', label = 'Zinsbindung')
-plt.plot(monate, restschulden, label="Restschuld")
-# plt.plot(monate, zinsenTotal, label="Zinsen")
-plt.plot(monate, tilgungenTotal, label="Tilgung")
+plt.axvline(x = zinsbindungJahre, linestyle='--', color = 'r', label = 'Zinsbindung')
+plt.plot(jahre, restschulden, label="Restschuld")
+plt.plot(jahre, tilgungenTotal, label="Tilgung")
 plt.legend()
 plt.figure()
 
 # Zins & Tilgung (monatlich)
-plt.title('Zins & Tilgung (monatlich)')
-plt.xlabel('Monate')
+plt.title('Zins & Tilgung (€/monat)')
+plt.xlabel('Jahre')
 
 plt.grid(visible=True)
 plt.ylim(0.0, annuitat * 1.1)
 plt.axhline(y = annuitat, linestyle='--', color = 'g', label = 'Annuitat')
-plt.plot(monate, zinsen, label="Zinsen")
-plt.plot(monate, tilgungen, label="Tilgung")
+plt.plot(jahre, zinsen, label="Zinsen")
+plt.plot(jahre, tilgungen, label="Tilgung")
 plt.legend()
 plt.figure()
 
 # Immobilieneigentum
-plt.title('Immobilieneigentum')
-plt.xlabel('Monate')
+plt.title('Immobilieneigentum (%)')
+plt.xlabel('Jahre')
 
 plt.grid(visible=True)
-plt.axvline(x = zinsbindungMonate, linestyle='--', color = 'r', label = 'Zinsbindung')
-plt.plot(monate, immobilienEigentum, label="Eigentum %")
+plt.axvline(x = zinsbindungJahre, linestyle='--', color = 'r', label = 'Zinsbindung')
+plt.plot(jahre, immobilienEigentum, label="Eigentum %")
 plt.legend()
 
 plt.show()
