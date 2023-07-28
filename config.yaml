@@ -14,4 +14,4 @@ zinssatzJahrlich: 0.0374
 zinsbindungJahre: 15.0
 
 # Logging
-loglevel: DEBUG
+loglevel: INFO
