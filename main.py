@@ -160,9 +160,9 @@ logger.info('--- ERGEBNIS ---')
 logger.info('----------------')
 logger.info('')
 
-logger.info("zinsBezahlt: " + str(zinsenBezahltBisSollzinsbindung))
-logger.info("tilgungBezahlt: " + str(tilgungenBezahltBisSollzinsbindung))
-logger.info("nettoMieteEinkommenBezahlt: " + str(nettoMieteEinkommenBezahltBisSollzinsbindung))
+logger.info("zinsenBezahltBisSollzinsbindung: " + str(zinsenBezahltBisSollzinsbindung))
+logger.info("tilgungenBezahltBisSollzinsbindung: " + str(tilgungenBezahltBisSollzinsbindung))
+logger.info("nettoMieteEinkommenBezahltBisSollzinsbindung: " + str(nettoMieteEinkommenBezahltBisSollzinsbindung))
 
 # Verlorenes Geld = Zinsen + Nebenkosten + Modernisierung
 verlorenesGeld = zinsenBezahltBisSollzinsbindung + nebenkosten + modernisierung
@@ -222,4 +222,4 @@ plt.axvline(x = sollzinsbindungJahre, linestyle='--', color = 'r', label = 'Zins
 plt.plot(jahreArray, immobilienEigentumArray, label="Eigentum %")
 plt.legend()
 
-# plt.show()
+plt.show()
