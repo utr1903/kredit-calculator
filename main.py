@@ -57,6 +57,14 @@ logger.info("zinssatzJahrlich: " + str(config['zinssatzJahrlich']))
 zinsbindungJahre = config['zinsbindungJahre']
 logger.info("zinsbindungJahre: " + str(config['zinsbindungJahre']))
 
+# Miete
+kaltMieteMonatlich = config['kaltMieteMonatlich']
+logger.info("kaltMieteMonatlich: " + str(config['kaltMieteMonatlich']))
+mieteNebenkostenMonatlich = config['mieteNebenkostenMonatlich']
+logger.info("mieteNebenkostenMonatlich: " + str(config['mieteNebenkostenMonatlich']))
+hausgeldMonatlich = config['hausgeldMonatlich']
+logger.info("hausgeldMonatlich: " + str(config['hausgeldMonatlich']))
+
 ##################
 ### Berechnung ###
 ##################
@@ -82,6 +90,9 @@ logger.info("laufzeitJahre: " + str(laufzeitMonaten / 12.0))
 anfangstilgung = annuitat * 12.0 / darlehen - zinssatzMonatlich
 logger.info("anfangstilgung: " + str(anfangstilgung))
 
+nettoMieteEinkommenMonatlich = kaltMieteMonatlich + mieteNebenkostenMonatlich - hausgeldMonatlich
+logger.info("nettoMieteEinkommenMonatlich: " + str(nettoMieteEinkommenMonatlich))
+
 # Plot variables
 zinsbindungMonate = zinsbindungJahre * 12.0
 jahre = []
@@ -91,12 +102,15 @@ zinsenTotal = []
 tilgungen = []
 tilgungenTotal = []
 immobilienEigentum = []
+nettoMieteEinkommen = []
 
 zinsBezahlt = 0.0
 zinsTotal = 0.0
 tilgungBezahlt = 0.0
 tilgungTotal = 0.0
 immobilienEigentumTotal = eigenkapital
+nettoMieteEinkommenBezahlt = 0.0
+nettoMieteEinkommenTotal = 0.0
 
 for monat in range(int(laufzeitMonaten)):
 
@@ -121,16 +135,19 @@ for monat in range(int(laufzeitMonaten)):
   zinsen.append(zins)
   tilgungen.append(tilgung)
   
-  zinsenTotal.append(zinsenTotal)
+  zinsenTotal.append(zinsTotal)
   tilgungenTotal.append(tilgungTotal)
 
-  zinsTotal = zinsTotal + zins
   if monat < zinsbindungMonate:
     zinsBezahlt = zinsBezahlt + zins
     tilgungBezahlt = tilgungBezahlt + tilgung
+    nettoMieteEinkommenBezahlt = nettoMieteEinkommenBezahlt + nettoMieteEinkommenMonatlich
 
   immobilienEigentumTotal = immobilienEigentumTotal + tilgung
   immobilienEigentum.append(immobilienEigentumTotal / (kaufpreis + nebenkosten) * 100)
+
+  nettoMieteEinkommenTotal = nettoMieteEinkommenTotal + nettoMieteEinkommenMonatlich
+  nettoMieteEinkommen.append(nettoMieteEinkommenTotal)
 
 logger.info('')
 logger.info('----------------')
@@ -140,11 +157,16 @@ logger.info('')
 
 logger.info("zinsBezahlt: " + str(zinsBezahlt))
 logger.info("tilgungBezahlt: " + str(tilgungBezahlt))
+logger.info("nettoMieteEinkommenBezahlt: " + str(nettoMieteEinkommenBezahlt))
+
+verlorenesGeld = zinsBezahlt + nebenkosten
+logger.info("verlorenesGeld: " + str(verlorenesGeld))
+
+
 immobilienEigentumAmZinsbindung = eigenkapital + tilgungBezahlt
 immobilienEigentumAmZinsbindungProzent = immobilienEigentumAmZinsbindung / (kaufpreis + nebenkosten) * 100
 logger.info("immobilienEigentumAmZinsbindung: " + str(immobilienEigentumAmZinsbindung))
 logger.info("immobilienEigentumAmZinsbindungProzent: " + str(immobilienEigentumAmZinsbindungProzent))
-
 logger.info("---")
 
 ######################
@@ -172,6 +194,17 @@ plt.axvline(x = zinsbindungJahre, linestyle='--', color = 'r', label = 'Zinsbind
 plt.axhline(y = annuitat, linestyle='--', color = 'g', label = 'Annuitat')
 plt.plot(jahre, zinsen, label="Zinsen")
 plt.plot(jahre, tilgungen, label="Tilgung")
+plt.legend()
+plt.figure()
+
+# Verdient & Verloren (€)
+plt.title('Verdient & Verloren (€)')
+plt.xlabel('Jahre')
+
+plt.grid(visible=True)
+plt.axvline(x = zinsbindungJahre, linestyle='--', color = 'r', label = 'Zinsbindung')
+plt.plot(jahre, zinsenTotal, label="Zinsen")
+plt.plot(jahre, nettoMieteEinkommen, label="Miete")
 plt.legend()
 plt.figure()
 

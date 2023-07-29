@@ -13,5 +13,10 @@ annuitat: 1300.0
 zinssatzJahrlich: 0.0374
 zinsbindungJahre: 15.0
 
+# Miete
+kaltMieteMonatlich: 900
+mieteNebenkostenMonatlich: 150
+hausgeldMonatlich: 300
+
 # Logging
 loglevel: INFO
