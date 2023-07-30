@@ -17,6 +17,7 @@ sollzinsbindungJahre: 15.0
 kaltMieteMonatlich: 900
 mieteNebenkostenMonatlich: 150
 hausgeldMonatlich: 300
+steuerprozent: 40.0
 
 # Logging
 loglevel: INFO

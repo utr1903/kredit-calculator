@@ -64,6 +64,8 @@ mieteNebenkostenMonatlich = config['mieteNebenkostenMonatlich']
 logger.info("mieteNebenkostenMonatlich: " + str(config['mieteNebenkostenMonatlich']))
 hausgeldMonatlich = config['hausgeldMonatlich']
 logger.info("hausgeldMonatlich: " + str(config['hausgeldMonatlich']))
+steuerprozent = config['steuerprozent']
+logger.info("steuerprozent: " + str(config['steuerprozent']))
 
 ##################
 ### Berechnung ###
@@ -90,8 +92,8 @@ logger.info("laufzeitJahre: " + str(laufzeitMonate / 12.0))
 anfangstilgung = annuitat * 12.0 / darlehen - zinssatzMonatlich
 logger.info("anfangstilgung: " + str(anfangstilgung))
 
-nettoMieteEinkommenMonatlich = kaltMieteMonatlich + mieteNebenkostenMonatlich - hausgeldMonatlich
-logger.info("nettoMieteEinkommenMonatlich: " + str(nettoMieteEinkommenMonatlich))
+nettoMieteEinkommenMonatlichVorSteuer = kaltMieteMonatlich + mieteNebenkostenMonatlich - hausgeldMonatlich
+logger.info("nettoMieteEinkommenMonatlichVorSteuer: " + str(nettoMieteEinkommenMonatlichVorSteuer))
 
 # Plot variables
 sollzinsbindungMonate = sollzinsbindungJahre * 12.0
@@ -103,6 +105,7 @@ tilgungenArray = []
 tilgungenTotalArray = []
 immobilienEigentumArray = []
 nettoMieteEinkommenArray = []
+nettoEinkommenArray = []
 
 zinsenBezahltBisSollzinsbindung = 0.0
 zinsenTotalBisEndeLaufzeit = 0.0
@@ -111,6 +114,7 @@ tilgungenTotalBisEndeLaufzeit = 0.0
 immobilienEigentumTotalBisEndeLaufzeit = eigenkapital
 nettoMieteEinkommenBezahltBisSollzinsbindung = 0.0
 nettoMieteEinkommenTotalBisEndeLaufzeit = 0.0
+nettoEinkommenTotalBisEndeLaufzeit = 0.0
 
 for monat in range(int(laufzeitMonate)):
 
@@ -140,19 +144,26 @@ for monat in range(int(laufzeitMonate)):
   zinsenTotalArray.append(zinsenTotalBisEndeLaufzeit)
   tilgungenTotalArray.append(tilgungenTotalBisEndeLaufzeit)
 
+  nettoMieteEinkommenMonatlichNachSteuer = (nettoMieteEinkommenMonatlichVorSteuer - zins) * (100.0 - steuerprozent) / 100.0
+  logger.debug("nettoMieteEinkommenMonatlichVorSteuer: " + str(nettoMieteEinkommenMonatlichVorSteuer))
+
   # Kumulativ bezahlten Zinsen & Tilgungen bis Ende der Sollzinsbindungszeit
   if monat < sollzinsbindungMonate:
     zinsenBezahltBisSollzinsbindung = zinsenBezahltBisSollzinsbindung + zins
     tilgungenBezahltBisSollzinsbindung = tilgungenBezahltBisSollzinsbindung + tilgung
-    nettoMieteEinkommenBezahltBisSollzinsbindung = nettoMieteEinkommenBezahltBisSollzinsbindung + nettoMieteEinkommenMonatlich
+    nettoMieteEinkommenBezahltBisSollzinsbindung = nettoMieteEinkommenBezahltBisSollzinsbindung + nettoMieteEinkommenMonatlichVorSteuer
 
   # Immobilieneigentum
   immobilienEigentumTotalBisEndeLaufzeit = immobilienEigentumTotalBisEndeLaufzeit + tilgung
   immobilienEigentumArray.append(immobilienEigentumTotalBisEndeLaufzeit / (kaufpreis + nebenkosten) * 100)
 
   # Netto Mieteinkommen
-  nettoMieteEinkommenTotalBisEndeLaufzeit = nettoMieteEinkommenTotalBisEndeLaufzeit + nettoMieteEinkommenMonatlich
+  nettoMieteEinkommenTotalBisEndeLaufzeit = nettoMieteEinkommenTotalBisEndeLaufzeit + nettoMieteEinkommenMonatlichVorSteuer
   nettoMieteEinkommenArray.append(nettoMieteEinkommenTotalBisEndeLaufzeit)
+
+  # Netto Einkommen
+  nettoEinkommenTotalBisEndeLaufzeit = nettoEinkommenTotalBisEndeLaufzeit + (nettoMieteEinkommenMonatlichVorSteuer - zins) * (100.0 - steuerprozent) / 100.0
+  nettoEinkommenArray.append(nettoEinkommenTotalBisEndeLaufzeit)
 
 logger.info('')
 logger.info('----------------')
@@ -202,14 +213,15 @@ plt.plot(jahreArray, tilgungenArray, label="Tilgung")
 plt.legend()
 plt.figure()
 
-# Verdient & Verloren (€)
-plt.title('Verdient & Verloren (€)')
+# Rentabilitat (€)
+plt.title('Rentabilitat (€)')
 plt.xlabel('Jahre')
 
 plt.grid(visible=True)
 plt.axvline(x = sollzinsbindungJahre, linestyle='--', color = 'r', label = 'Zinsbindung')
 plt.plot(jahreArray, zinsenTotalArray, label="Zinsen")
-plt.plot(jahreArray, nettoMieteEinkommenArray, label="Miete")
+plt.plot(jahreArray, nettoMieteEinkommenArray, label="Miete (Total)")
+plt.plot(jahreArray, nettoEinkommenArray, label="Miete (Netto)")
 plt.legend()
 plt.figure()
 
