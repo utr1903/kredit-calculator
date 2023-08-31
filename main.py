@@ -110,6 +110,8 @@ nettoMieteEinkommenVorSteuerTotalArray = []
 nettoMieteEinkommenNachSteuerTotalArray = []
 selbstFinanzierungVonZinsenArray = []
 selbstFinanzierungVonZinsenTotalArray = []
+selbstFinanzierungInsgesamtArray = []
+selbstFinanzierungInsgesamtTotalArray = []
 
 zinsenBisSollzinsbindung = 0.0
 zinsenBisEndeLaufzeit = 0.0
@@ -120,6 +122,7 @@ nettoMieteEinkommenBisSollzinsbindung = 0.0
 nettoMieteEinkommenVorSteuerBisEndeLaufzeit = 0.0
 nettoMieteEinkommenNachSteuerBisEndeLaufzeit = 0.0
 selbstFinanzierungVonZinsenBisEndeLaufzeit = 0.0
+selbstFinanzierungInsgesamtBisEndeLaufzeit = 0.0
 
 for monat in range(int(laufzeitMonate)):
 
@@ -180,6 +183,12 @@ for monat in range(int(laufzeitMonate)):
 
     selbstFinanzierungVonZinsenBisEndeLaufzeit = selbstFinanzierungVonZinsenBisEndeLaufzeit + selbstFinanzierungVonZinsen
     selbstFinanzierungVonZinsenTotalArray.append(selbstFinanzierungVonZinsenBisEndeLaufzeit)
+
+    selbstFinanzierungInsgesamt = tilgung + selbstFinanzierungVonZinsen
+    selbstFinanzierungInsgesamtArray.append(selbstFinanzierungInsgesamt)
+
+    selbstFinanzierungInsgesamtBisEndeLaufzeit = selbstFinanzierungInsgesamtBisEndeLaufzeit + selbstFinanzierungInsgesamt
+    selbstFinanzierungInsgesamtTotalArray.append(selbstFinanzierungInsgesamtBisEndeLaufzeit)
   else:
     nettoMieteEinkommenNachSteuerArray.append(nettoMieteEinkommenMonatlichNachSteuer)
 
@@ -191,6 +200,12 @@ for monat in range(int(laufzeitMonate)):
 
     selbstFinanzierungVonZinsenBisEndeLaufzeit = 0.0
     selbstFinanzierungVonZinsenTotalArray.append(selbstFinanzierungVonZinsenBisEndeLaufzeit)
+
+    selbstFinanzierungInsgesamt = tilgung - nettoMieteEinkommenMonatlichNachSteuer
+    selbstFinanzierungInsgesamtArray.append(selbstFinanzierungInsgesamt)
+
+    selbstFinanzierungInsgesamtBisEndeLaufzeit = selbstFinanzierungInsgesamtBisEndeLaufzeit + selbstFinanzierungInsgesamt
+    selbstFinanzierungInsgesamtTotalArray.append(selbstFinanzierungInsgesamtBisEndeLaufzeit)
 
 logger.info('')
 logger.info('----------------')
@@ -240,6 +255,7 @@ plt.plot(jahreArray, tilgungenArray, label='Tilgung')
 plt.plot(jahreArray, nettoMieteEinkommenVorSteuerArray, label='Miete (vor Steuer)')
 plt.plot(jahreArray, nettoMieteEinkommenNachSteuerArray, label='Miete (nach Steuer)')
 plt.plot(jahreArray, selbstFinanzierungVonZinsenArray, label='Selbst finanziert (Zinsen)')
+plt.plot(jahreArray, selbstFinanzierungInsgesamtArray, label='Selbst finanziert (Insgesamt)')
 plt.legend()
 plt.figure()
 
@@ -253,6 +269,7 @@ plt.plot(jahreArray, zinsenTotalArray, label='Zinsen')
 plt.plot(jahreArray, nettoMieteEinkommenVorSteuerTotalArray, label='Miete (vor Steuer)')
 plt.plot(jahreArray, nettoMieteEinkommenNachSteuerTotalArray, label='Miete (nach Steuer)')
 plt.plot(jahreArray, selbstFinanzierungVonZinsenTotalArray, label='Selbst finanziert (Zinsen)')
+plt.plot(jahreArray, selbstFinanzierungInsgesamtTotalArray, label='Selbst finanziert (Insgesamt)')
 plt.legend()
 plt.figure()
 
