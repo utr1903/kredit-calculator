@@ -60,8 +60,6 @@ logger.info('sollzinsbindungJahre: ' + str(config['sollzinsbindungJahre']))
 # Miete
 kaltMieteMonatlich = config['kaltMieteMonatlich']
 logger.info('kaltMieteMonatlich: ' + str(config['kaltMieteMonatlich']))
-mieteNebenkostenMonatlich = config['mieteNebenkostenMonatlich']
-logger.info('mieteNebenkostenMonatlich: ' + str(config['mieteNebenkostenMonatlich']))
 hausgeldMonatlich = config['hausgeldMonatlich']
 logger.info('hausgeldMonatlich: ' + str(config['hausgeldMonatlich']))
 steuerprozent = config['steuerprozent']
@@ -92,7 +90,7 @@ logger.info('laufzeitJahre: ' + str(laufzeitMonate / 12.0))
 anfangstilgung = annuitat * 12.0 / darlehen - zinssatzMonatlich
 logger.info('anfangstilgung: ' + str(anfangstilgung))
 
-nettoMieteEinkommenMonatlichVorSteuer = kaltMieteMonatlich + mieteNebenkostenMonatlich - hausgeldMonatlich
+nettoMieteEinkommenMonatlichVorSteuer = kaltMieteMonatlich - hausgeldMonatlich
 logger.info('nettoMieteEinkommenMonatlichVorSteuer: ' + str(nettoMieteEinkommenMonatlichVorSteuer))
 
 # Plot variables
